@@ -12,8 +12,6 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useRole } from 'src/hooks/use-role';
 
-import { _langs, _notifications } from 'src/_mock';
-
 import { CartWidget } from 'src/components/cart/cart-widget';
 
 import { NavMobile, NavDesktop } from './nav';
@@ -22,15 +20,13 @@ import { _account } from '../nav-config-account';
 import { dashboardLayoutVars } from './css-vars';
 import { navData } from '../nav-config-dashboard';
 import { MainSection } from '../core/main-section';
-import { Searchbar } from '../components/searchbar';
 import { _workspaces } from '../nav-config-workspace';
 import { MenuButton } from '../components/menu-button';
 import { HeaderSection } from '../core/header-section';
 import { LayoutSection } from '../core/layout-section';
+import { ThemeToggle } from '../components/theme-toggle';
 import { AccountPopover } from '../components/account-popover';
-import { LanguagePopover } from '../components/language-popover';
 import { UserRoleDisplay } from '../components/user-role-display';
-import { NotificationsPopover } from '../components/notifications-popover';
 
 import type { MainSectionProps } from '../core/main-section';
 import type { HeaderSectionProps } from '../core/header-section';
@@ -95,15 +91,29 @@ export function DashboardLayout({
           {/** @slot Nav mobile */}
           <MenuButton
             onClick={onOpen}
-            sx={{ mr: 1, ml: -1, [theme.breakpoints.up(layoutQuery)]: { display: 'none' } }}
+            sx={{ 
+              mr: 1, 
+              ml: -1, 
+              [theme.breakpoints.up(layoutQuery)]: { display: 'none' },
+              '&:hover': {
+                transform: 'scale(1.05)',
+              },
+              transition: 'transform 0.2s ease'
+            }}
           />
           <NavMobile data={filteredNavData} open={open} onClose={onClose} workspaces={_workspaces} />
         </>
       ),
       rightArea: (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 0.75 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
           {/** @slot User Role */}
           <UserRoleDisplay />
+
+          {/** @slot Theme toggle */}
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Theme toggle button (CSS-only theme switch) */}
+            <ThemeToggle />
+          </Box>
 
           {/** @slot Cart widget */}
           <CartWidget />
@@ -167,6 +177,9 @@ export function DashboardLayout({
               }),
             },
           },
+          // Efecto de fondo: dejar transparente para que el <body> controle los fondos temáticos
+          background: 'transparent',
+          minHeight: '100vh',
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}

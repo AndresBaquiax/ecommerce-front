@@ -15,9 +15,6 @@ import { RouterLink } from 'src/routes/components';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { NavUpgrade } from '../components/nav-upgrade';
-import { WorkspacesPopover } from '../components/workspaces-popover';
-
 import type { NavItem } from '../nav-config-dashboard';
 import type { WorkspacesPopoverProps } from '../components/workspaces-popover';
 
@@ -59,7 +56,9 @@ export function NavDesktop({
         flexDirection: 'column',
         zIndex: 'var(--layout-nav-zIndex)',
         width: collapsed ? 'var(--layout-nav-collapsed-width)' : 'var(--layout-nav-vertical-width)',
-        borderRight: `1px solid ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
+        background: 'linear-gradient(180deg, #2196F3 0%, #1976D2 100%) !important',
+        boxShadow: '4px 0 20px rgba(33, 150, 243, 0.15)',
+        borderRight: 'none',
         [theme.breakpoints.up(layoutQuery)]: {
           display: 'flex',
         },
@@ -110,6 +109,7 @@ export function NavMobile({
           px: 2.5,
           overflow: 'unset',
           width: 'var(--layout-nav-mobile-width)',
+          background: 'linear-gradient(180deg, #2196F3 0%, #1976D2 100%) !important',
           ...sx,
         },
       }}
@@ -127,7 +127,13 @@ export function NavContent({ data, slots, workspaces, sx, collapsed = false, onT
 
   return (
     <>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', mb: 2 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: collapsed ? 'center' : 'flex-start', 
+        mb: 2,
+        px: collapsed ? 0 : 1 
+      }}>
         <Logo />
       </Box>
 
@@ -168,29 +174,50 @@ export function NavContent({ data, slots, workspaces, sx, collapsed = false, onT
                         py: 1,
                         gap: collapsed ? 0 : 2,
                         pr: collapsed ? 1 : 1.5,
-                        borderRadius: 0.75,
+                        borderRadius: 2,
                         typography: 'body2',
                         fontWeight: 'fontWeightMedium',
-                        color: theme.vars.palette.text.secondary,
+                        color: 'rgba(255, 255, 255, 0.9)',
                         minHeight: 44,
                         justifyContent: collapsed ? 'center' : 'flex-start',
-                        transition: theme.transitions.create(['padding', 'gap', 'justify-content'], {
+                        transition: theme.transitions.create([
+                          'padding', 'gap', 'justify-content', 'background-color', 'transform'
+                        ], {
                           duration: theme.transitions.duration.standard,
                           easing: theme.transitions.easing.easeInOut,
                         }),
+                        '&:hover': {
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          transform: 'translateX(4px)',
+                          color: '#FFFFFF',
+                        },
                         ...(isActived && {
                           fontWeight: 'fontWeightSemiBold',
-                          color: theme.vars.palette.primary.main,
-                          bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
+                          color: '#FFFFFF',
+                          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                          backdropFilter: 'blur(10px)',
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                          borderLeft: '4px solid #FFC107',
                           '&:hover': {
-                            bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.16),
+                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                            transform: 'translateX(4px)',
                           },
                         }),
                       }),
                     ]}
                     title={collapsed ? item.title : undefined}
                   >
-                    <Box component="span" sx={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box 
+                      component="span" 
+                      sx={{ 
+                        width: 24, 
+                        height: 24, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        color: isActived ? '#FFC107' : 'rgba(255, 255, 255, 0.8)'
+                      }}
+                    >
                       {item.icon}
                     </Box>
 
@@ -238,36 +265,42 @@ export function NavContent({ data, slots, workspaces, sx, collapsed = false, onT
           sx={{
             display: 'flex',
             justifyContent: collapsed ? 'center' : 'flex-start',
-            mt: 1,
-            pb: 1,
+            mt: 2,
+            pb: 2,
+            px: collapsed ? 0 : 1,
           }}
         >
           <Box
             component="button"
             onClick={onToggleCollapse}
             sx={{
-              p: 0.5,
+              p: 1,
               border: 'none',
-              borderRadius: 1,
+              borderRadius: 2,
               cursor: 'pointer',
-              backgroundColor: 'transparent',
-              color: 'text.secondary',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              color: 'rgba(255, 255, 255, 0.9)',
               '&:hover': {
-                backgroundColor: 'action.hover',
-                color: 'primary.main',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: '#FFFFFF',
+                transform: 'scale(1.05)',
               },
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               transition: 'all 0.3s ease',
             }}
+            title={collapsed ? 'Expandir menú' : 'Contraer menú'}
           >
             <Box
               component="span"
               className="material-icons"
-              sx={{ fontSize: 20 }}
+              sx={{ 
+                fontSize: 20,
+                transition: 'transform 0.3s ease'
+              }}
             >
               {collapsed ? 'chevron_right' : 'chevron_left'}
             </Box>

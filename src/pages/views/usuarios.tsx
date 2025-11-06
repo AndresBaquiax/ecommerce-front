@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
-import { listRoles, type Rol } from 'src/services/roles';
+import { type Rol, listRoles } from 'src/services/roles';
 import { listUsers, createUser, updateUser, deleteUser, type Usuario } from 'src/services/usuarios';
 
 type EstadoFilter = 'todos' | 'activos' | 'inactivos';

@@ -1,11 +1,20 @@
-import path from 'path';
-
 import { Label } from 'src/components/label';
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
-const icon = (name: string) => <SvgColor src={`/assets/icons/navbar/${name}.svg`} />;
+// Función para generar íconos con colores modernos
+const icon = (name: string) => (
+  <SvgColor 
+    src={`/assets/icons/navbar/${name}.svg`} 
+    sx={{ 
+      width: 24, 
+      height: 24,
+      // Color moderno para íconos
+      color: 'rgba(255, 255, 255, 0.9)'
+    }} 
+  />
+);
 
 export type NavItem = {
   title: string;
@@ -25,7 +34,20 @@ export const navData = [
     path: '/shopping',
     icon: icon('ic--twotone-add-shopping-cart'),
     info: (
-      <Label color="error" variant="inverted">
+      <Label 
+        color="warning" 
+        variant="filled"
+        sx={{
+          background: 'linear-gradient(135deg, #FFC107, #FF9800)',
+          color: '#1C252E',
+          fontWeight: 'bold',
+          fontSize: '0.75rem',
+          minWidth: 24,
+          height: 20,
+          borderRadius: 10,
+          boxShadow: '0 2px 8px rgba(255, 193, 7, 0.3)'
+        }}
+      >
         +9
       </Label>
     ),

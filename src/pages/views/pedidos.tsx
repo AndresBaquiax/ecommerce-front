@@ -1,7 +1,7 @@
 // src/pages/views/pedidos.tsx
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
-import { listPedidos, buscarPedidos, marcarComoEntregado, type Pedido } from 'src/services/pedidos';
+import { listPedidos, type Pedido, buscarPedidos, marcarComoEntregado } from 'src/services/pedidos';
 
 // Icons simples
 const SearchIcon = () => (<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>);
@@ -73,7 +73,7 @@ const PedidosPage: React.FC = () => {
 
   const marcarEntregado = async (p: Pedido) => {
     if (!p.estado) return; // ya entregado
-    // eslint-disable-next-line no-alert
+     
     if (!window.confirm(`¿Marcar pedido #${p.id_pedido} como ENTREGADO?`)) return;
     try {
       await marcarComoEntregado(p.id_pedido);

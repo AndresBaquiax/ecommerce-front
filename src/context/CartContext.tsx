@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
+import type { ReactNode} from 'react';
+
+import React, { useState, useContext, useCallback, createContext } from 'react';
 
 // Define la forma de un producto que se puede añadir al carrito
 export interface CartProduct {

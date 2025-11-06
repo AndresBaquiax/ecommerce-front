@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 import { useRouter } from 'src/routes/hooks';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { listActiveProviders, type Proveedor } from 'src/services/proveedores';
+import { type Proveedor, listActiveProviders } from 'src/services/proveedores';
 import { registrarCompra, type RegistrarCompraDTO } from 'src/services/compras';
 import { listActiveInventory, type InventarioItem } from 'src/services/inventario';
 

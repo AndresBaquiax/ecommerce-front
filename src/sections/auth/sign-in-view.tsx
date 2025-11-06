@@ -2,12 +2,15 @@ import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
+import Card from '@mui/material/Card';
 import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
+import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
@@ -64,92 +67,91 @@ export function SignInView() {
   }, [email, password, router]);
 
   const renderForm = (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-end',
-        flexDirection: 'column',
-      }}
-    >
-      {error && (
-        <Alert severity="error" sx={{ width: '100%', mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-      
-      <TextField
-        fullWidth
-        name="email"
-        label="Correo electrónico"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        sx={{ mb: 3 }}
-        slotProps={{
-          inputLabel: { shrink: true },
-        }}
-      />
+    <Card sx={{ width: '100%', boxShadow: 6, borderRadius: 2 }}>
+      <CardContent>
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-      <TextField
-        fullWidth
-        name="password"
-        label="Contrasena"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type={showPassword ? 'text' : 'password'}
-        slotProps={{
-          inputLabel: { shrink: true },
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                  <Iconify icon={showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-        sx={{ mb: 3 }}
-      />
+        <Stack spacing={2}>
+          <TextField
+            fullWidth
+            name="email"
+            label="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mb: 0 }}
+            InputLabelProps={{ shrink: true }}
+          />
 
-      <Button
-        fullWidth
-        size="large"
-        type="submit"
-        color="inherit"
-        variant="contained"
-        onClick={handleSignIn}
-        disabled={loading}
-      >
-        {loading ? 'Iniciando...' : 'Iniciar sesión'}
-      </Button>
-    </Box>
+          <TextField
+            fullWidth
+            name="password"
+            label="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? 'text' : 'password'}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                    <Iconify icon={showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button
+            fullWidth
+            size="large"
+            type="submit"
+            color="primary"
+            variant="contained"
+            onClick={handleSignIn}
+            disabled={loading}
+          >
+            {loading ? 'Iniciando...' : 'Iniciar sesión'}
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 
   return (
-    <>
+    <Box sx={{ width: '100%' }}>
       <Box
         sx={{
           gap: 1.5,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          mb: 5,
+          mb: 3,
         }}
       >
-        <Typography variant="h5">Iniciar sesión</Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-          }}
-        >
-          No tienes una cuenta?
+        <Avatar sx={{ bgcolor: 'primary.main', width: 72, height: 72 }}>
+          <Iconify icon="solar:cart-3-bold" width={36} height={36} />
+        </Avatar>
+
+        <Typography variant="h4">Bienvenido</Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
+          Accede a tu cuenta para administrar pedidos, inventario y reportes.
+        </Typography>
+      </Box>
+
+      {renderForm}
+
+      <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          ¿No tienes una cuenta?
           <Link variant="subtitle2" sx={{ ml: 0.5, cursor: 'pointer' }} onClick={() => router.push('/sign-up')}>
-            Comienza aquí
+            Regístrate
           </Link>
         </Typography>
       </Box>
-      {renderForm}
-    </>
+    </Box>
   );
 }

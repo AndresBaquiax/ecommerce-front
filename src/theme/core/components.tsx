@@ -32,7 +32,25 @@ const MuiButton: Components<Theme>['MuiButton'] = {
     }),
     sizeLarge: {
       minHeight: 48,
+      borderRadius: 12,
     },
+    // Estilos modernos para botones
+    root: ({ theme }) => ({
+      borderRadius: 12,
+      textTransform: 'none',
+      fontWeight: 600,
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: theme.shadows[8],
+      },
+    }),
+    containedPrimary: ({ theme }) => ({
+      background: `linear-gradient(135deg, ${theme.vars.palette.primary.main}, ${theme.vars.palette.primary.dark})`,
+      '&:hover': {
+        background: `linear-gradient(135deg, ${theme.vars.palette.primary.dark}, ${theme.vars.palette.primary.darker})`,
+      },
+    }),
   },
 };
 
@@ -42,7 +60,15 @@ const MuiCard: Components<Theme>['MuiCard'] = {
       zIndex: 0,
       position: 'relative',
       boxShadow: theme.vars.customShadows.card,
-      borderRadius: theme.shape.borderRadius * 2,
+      borderRadius: 16, // Más redondeado
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        transform: 'translateY(-8px)',
+        boxShadow: theme.vars.customShadows.z24,
+      },
     }),
   },
 };
@@ -61,8 +87,21 @@ const MuiCardHeader: Components<Theme>['MuiCardHeader'] = {
 
 const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
   styleOverrides: {
+    root: ({ theme }) => ({
+      borderRadius: 12,
+      background: 'rgba(255, 255, 255, 0.9)',
+      backdropFilter: 'blur(10px)',
+      transition: 'all 0.3s ease',
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.vars.palette.primary.light,
+      },
+      '&.Mui-focused': {
+        boxShadow: `0 0 0 2px ${varAlpha(theme.vars.palette.primary.mainChannel, 0.2)}`,
+      },
+    }),
     notchedOutline: ({ theme }) => ({
       borderColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.2),
+      borderWidth: 1,
     }),
   },
 };
@@ -70,7 +109,10 @@ const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
 const MuiPaper: Components<Theme>['MuiPaper'] = {
   defaultProps: { elevation: 0 },
   styleOverrides: {
-    root: { backgroundImage: 'none' },
+    root: { 
+      backgroundImage: 'none',
+      borderRadius: 16,
+    },
     outlined: ({ theme }) => ({
       borderColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.16),
     }),
@@ -92,6 +134,11 @@ const MuiMenuItem: Components<Theme>['MuiMenuItem'] = {
   styleOverrides: {
     root: ({ theme }) => ({
       ...theme.typography.body2,
+      borderRadius: 8,
+      margin: '2px 8px',
+      '&:hover': {
+        backgroundColor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
+      },
     }),
   },
 };
@@ -108,6 +155,7 @@ const MuiFormControlLabel: Components<Theme>['MuiFormControlLabel'] = {
   },
 };
 
+// Los íconos de Checkbox y Radio se mantienen igual
 const MuiCheckbox: Components<Theme>['MuiCheckbox'] = {
   defaultProps: {
     size: 'small',

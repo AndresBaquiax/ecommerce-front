@@ -9,23 +9,21 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import {
   getResumen,
   type Resumen,
+  getStockBajo,
   getTopCategorias,
   getUsuariosPorRol,
   type TimelineItem,
+  type LowStockItem,
   getVentasMensuales,
   getTimelinePedidos,
   type EtiquetaValor,
-  getStockPorCategoria,
-  type VentasMensuales,
-  getStockBajo, type LowStockItem,
+  getStockPorCategoria, type VentasMensuales,
 } from 'src/services/reportes';
 
-import { AnalyticsTasks } from '../analytics-tasks';
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
 import { AnalyticsCurrentSubject } from '../analytics-current-subject';
 import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 

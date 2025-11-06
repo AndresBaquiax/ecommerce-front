@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 import {
-  type Proveedor,
   listProviders,
+  type Proveedor,
   createProvider,
   updateProvider,
   deleteProvider,

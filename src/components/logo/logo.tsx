@@ -1,10 +1,9 @@
 import type { LinkProps } from '@mui/material/Link';
 
-import { useId } from 'react';
 import { mergeClasses } from 'minimal-shared/utils';
 
 import Link from '@mui/material/Link';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 import { RouterLink } from 'src/routes/components';
 
@@ -44,9 +43,9 @@ export function Logo({
       {...other}
     >
       <img
-        src="/logo-pagina.ico"
+        src="/assets/images/logo.svg"
         alt="Logo"
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
       />
     </LogoRoot>
   );

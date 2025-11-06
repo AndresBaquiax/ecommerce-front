@@ -105,9 +105,10 @@ const HeaderRoot = styled(AppBar, {
     width: '100%',
     height: '100%',
     zIndex: pauseZindex.top,
-    backdropFilter: `blur(6px)`,
-    WebkitBackdropFilter: `blur(6px)`,
-    backgroundColor: varAlpha(theme.vars.palette.background.defaultChannel, 0.8),
+    backdropFilter: `blur(20px) saturate(180%)`,
+    WebkitBackdropFilter: `blur(20px) saturate(180%)`,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderBottom: `1px solid ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)}`,
     ...(isOffset && {
       opacity: 1,
       visibility: 'visible',
@@ -124,13 +125,14 @@ const HeaderRoot = styled(AppBar, {
     borderRadius: '50%',
     width: `calc(100% - 48px)`,
     zIndex: pauseZindex.bottom,
-    boxShadow: theme.vars.customShadows.z8,
+    boxShadow: `0 8px 32px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
     ...(isOffset && { opacity: 0.48, visibility: 'visible' }),
   };
 
   return {
     boxShadow: 'none',
     zIndex: 'var(--layout-header-zIndex)',
+    background: 'transparent',
     ...(!disableOffset && { '&::before': bgStyles }),
     ...(!disableElevation && { '&::after': shadowStyles }),
   };
@@ -143,7 +145,9 @@ const HeaderContainer = styled(Container, {
   alignItems: 'center',
   color: 'var(--color)',
   height: 'var(--layout-header-mobile-height)',
-  [theme.breakpoints.up(layoutQuery)]: { height: 'var(--layout-header-desktop-height)' },
+  [theme.breakpoints.up(layoutQuery)]: { 
+    height: 'var(--layout-header-desktop-height)',
+  },
 }));
 
 const HeaderCenterArea = styled('div')(() => ({
