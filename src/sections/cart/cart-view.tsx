@@ -19,6 +19,8 @@ import DialogActions from '@mui/material/DialogActions';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { useAuth } from 'src/hooks/use-auth';
+
 import { fCurrency } from 'src/utils/format-number';
 
 import { api } from 'src/services/api';
@@ -29,6 +31,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 
 export function CartView() {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showInvoice, setShowInvoice] = useState(false);
@@ -52,6 +55,18 @@ export function CartView() {
   };
 
   const handleOpenPaymentModal = () => {
+    // If user is not authenticated, show a prompt to login/register
+    if (!isAuthenticated) {
+      // Persistir carrito temporalmente para restaurar después del login
+      try {
+        localStorage.setItem('guest_cart', JSON.stringify(cartItems));
+      } catch (err) {
+        console.warn('No se pudo guardar el carrito en localStorage', err);
+      }
+      setOpenAuthPrompt(true);
+      return;
+    }
+
     setLoading(false); // Resetear loading al abrir el modal
     setOpenPaymentModal(true);
   };
@@ -156,6 +171,18 @@ export function CartView() {
       handleClosePaymentModal();
       handlePurchase();
     }
+  };
+
+  // Estado y manejadores para el prompt de autenticación cuando el usuario intenta pagar
+  const [openAuthPrompt, setOpenAuthPrompt] = useState(false);
+
+  const handleGoToLogin = () => {
+    // Redirigir a la página de login con parámetro next para regresar al carrito
+    navigate('/sign-in?next=/cart');
+  };
+
+  const handleCloseAuthPrompt = () => {
+    setOpenAuthPrompt(false);
   };
 
   // Función para decodificar JWT
@@ -616,6 +643,21 @@ export function CartView() {
           </Button>
         </DialogActions>
       </Dialog>
+
+        {/* Dialog para pedir autenticación antes de pagar */}
+        <Dialog open={openAuthPrompt} onClose={handleCloseAuthPrompt} maxWidth="xs" fullWidth>
+          <DialogTitle>Necesitas iniciar sesión</DialogTitle>
+          <DialogContent>
+            <Typography>
+              Para completar la compra debes iniciar sesión o crear una cuenta. ¿Deseas iniciar sesión ahora?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button variant="outlined" onClick={handleCloseAuthPrompt}>Cancelar</Button>
+            <Button variant="contained" onClick={handleGoToLogin}>Iniciar sesión</Button>
+            <Button variant="text" onClick={() => navigate('/sign-up?next=/cart')}>Registrarse</Button>
+          </DialogActions>
+        </Dialog>
     </Container>
   );
 }

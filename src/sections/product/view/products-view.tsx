@@ -57,18 +57,14 @@ export function ProductsView() {
       setLoading(true);
       setError(null);
       
+      // Allow fetching products without auth token (API is public)
       const token = localStorage.getItem('token');
-      
-      if (!token) {
-        console.error('No token found');
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch(`${import.meta.env.VITE_URL_API}/productos`, {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers,
       });
 
       if (!response.ok) {
@@ -92,7 +88,7 @@ export function ProductsView() {
   const transformProductData = (apiProduct: ApiProduct) => ({
       id: apiProduct.id_producto.toString(),
       name: apiProduct.nombre,
-      price: apiProduct.precio_unitario,
+      price: Number(apiProduct.precio_unitario),
       status: '', // Sin etiquetas de estado
       coverUrl: apiProduct.url_imagen || '/assets/images/product/product-1.webp', // Imagen por defecto si no hay
       available: apiProduct.estado, // Usar el estado del producto para determinar disponibilidad

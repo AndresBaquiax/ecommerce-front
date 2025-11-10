@@ -32,6 +32,8 @@ export const navData = [
   {
     title: 'Tienda en linea',
     path: '/shopping',
+    // visible sin autenticación
+    public: true,
     icon: icon('ic--twotone-add-shopping-cart'),
     info: (
       <Label 
@@ -86,10 +88,14 @@ export const navData = [
     title: 'Direcciones',
     path: '/direcciones',
     icon: icon('material-symbols--move-location-rounded'),
+    // Mostrar solo si el usuario está autenticado
+    requiresAuth: true,
   },
   {
     title: 'Historial de Compras',
     path: '/registrocompras',
     icon: icon('material-symbols--order-approve'),
+    // Mostrar solo si el usuario está autenticado
+    requiresAuth: true,
   },
 ];

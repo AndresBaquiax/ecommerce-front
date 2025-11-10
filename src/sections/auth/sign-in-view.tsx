@@ -53,6 +53,7 @@ export function SignInView() {
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         // Actualizar el estado de autenticación
         checkAuth();
+        // Redirigir al inicio después del login
         router.push('/');
       } else {
         // Mostrar mensaje de error cuando las credenciales son incorrectas

@@ -12,6 +12,8 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer';
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import { useAuth } from 'src/hooks/use-auth';
+
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 
@@ -124,6 +126,7 @@ export function NavMobile({
 export function NavContent({ data, slots, workspaces, sx, collapsed = false, onToggleCollapse }: NavContentProps) {
   const pathname = usePathname();
   const muiTheme = useTheme();
+  const { isAuthenticated } = useAuth();
 
   return (
     <>
@@ -159,7 +162,14 @@ export function NavContent({ data, slots, workspaces, sx, collapsed = false, onT
               flexDirection: 'column',
             }}
           >
-            {data.map((item) => {
+            {data
+              .filter((item) => {
+                  // ocultar items que requieran auth si no hay sesión
+                  const { requiresAuth } = item as any;
+                  if (requiresAuth && !isAuthenticated) return false;
+                  return true;
+                })
+              .map((item) => {
               const isActived = item.path === pathname;
 
               return (

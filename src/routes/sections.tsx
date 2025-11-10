@@ -1,8 +1,8 @@
 import type { RouteObject } from 'react-router';
 
 import { lazy, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
 import { varAlpha } from 'minimal-shared/utils';
+import { Outlet, Navigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
@@ -60,6 +60,44 @@ const renderFallback = () => (
 // ----------------------------------------------------------------------
 // Routes
 export const routesSection: RouteObject[] = [
+  // Public entry: redirect root to shopping
+  {
+    index: true,
+    element: <Navigate to="/shopping" replace />,
+  },
+
+  // Public shopping route (show DashboardLayout but without auth gating)
+  {
+    path: 'shopping',
+    element: (
+      <DashboardLayout>
+        <Suspense fallback={renderFallback()}>
+          <ProductsPage />
+        </Suspense>
+      </DashboardLayout>
+    ),
+  },
+  // Public products routes: allow viewing list and details without login
+  {
+    path: 'products',
+    element: (
+      <DashboardLayout>
+        <Suspense fallback={renderFallback()}>
+          <ProductsPage />
+        </Suspense>
+      </DashboardLayout>
+    ),
+  },
+  {
+    path: 'products/:id',
+    element: (
+      <DashboardLayout>
+        <Suspense fallback={renderFallback()}>
+          <ProductDetailPage />
+        </Suspense>
+      </DashboardLayout>
+    ),
+  },
   {
     element: (
       <ProtectedRoute>

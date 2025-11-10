@@ -2,6 +2,7 @@ import type { Breakpoint } from '@mui/material/styles';
 
 import { merge } from 'es-toolkit';
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useBoolean } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
@@ -57,6 +58,7 @@ export function DashboardLayout({
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const location = useLocation();
 
   // Filtrar elementos de navegación según el rol
   const filteredNavData = filterRoutesByRole(navData);
@@ -67,6 +69,11 @@ export function DashboardLayout({
 
   // Verificar autenticación
   useEffect(() => {
+    // Do not force sign-in for public storefront routes
+    const publicPrefixes = ['/', '/shopping', '/products', '/productos', '/categorias', '/products/'];
+    const isPublic = publicPrefixes.some((p) => location.pathname === p || location.pathname.startsWith(p));
+    if (isPublic) return;
+
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/sign-in');

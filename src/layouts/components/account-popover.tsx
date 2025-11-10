@@ -31,13 +31,20 @@ export type AccountPopoverProps = IconButtonProps & {
 
 export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const pathname = usePathname();
 
   const handleLogout = () => {
     logout();
-    router.push('/sign-in');
+    // Después del logout recargamos la página de la tienda pública
+    try {
+      // Forzar navegación completa y recarga para asegurarnos que el estado se reinicie
+      window.location.href = '/shopping';
+    } catch (err) {
+      // Fallback a router push si por alguna razón window no está disponible
+      router.push('/shopping');
+    }
   };
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -57,6 +64,20 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     },
     [handleClosePopover, router]
   );
+
+  // If no user, show explicit Login/Register buttons instead of avatar/popover
+  if (!isAuthenticated) {
+    return (
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Button size="small" variant="outlined" onClick={() => router.push('/sign-in')}>
+          Iniciar sesión
+        </Button>
+        <Button size="small" variant="contained" onClick={() => router.push('/sign-up')}>
+          Registrarse
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <>

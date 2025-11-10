@@ -60,14 +60,21 @@ export function useRole() {
   }, [userRole]);
 
   const filterRoutesByRole = useMemo(() => (routes: any[]): any[] => {
-    if (!userRole) return [];
-    
+    // Si no hay rol (usuario no autenticado), mostrar solo rutas marcadas como públicas
+    if (!userRole) {
+      return routes.filter(route => (route as any).public === true);
+    }
+
     // Administrador ve todas las rutas
     if (userRole === 'Administrador') return routes;
-    
+
     // Filtrar rutas según el rol
     const allowedRoutes = ROLE_ROUTES[userRole];
-    return routes.filter(route => allowedRoutes.includes(route.path));
+    return routes.filter(route => {
+      const path = route.path;
+      const basePath = path && path.split('/')[1] ? `/${path.split('/')[1]}` : path;
+      return allowedRoutes.includes(path) || allowedRoutes.includes(basePath) || (route as any).public === true;
+    });
   }, [userRole]);
 
   const getDefaultRoute = useMemo(() => {

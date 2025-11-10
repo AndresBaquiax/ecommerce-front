@@ -72,16 +72,12 @@ export function ProductDetailView() {
   const fetchProduct = async (productId: number) => {
     try {
       const token = localStorage.getItem('token');
-      
-      if (!token) {
-        console.error('No token found');
-        setLoading(false);
-        return;
-      }
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch(`${import.meta.env.VITE_URL_API}/productos/${productId}`, {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers,
       });
 
       if (!response.ok) {
@@ -98,17 +94,13 @@ export function ProductDetailView() {
   const fetchInventory = async (productId: number) => {
     try {
       const token = localStorage.getItem('token');
-      
-      if (!token) {
-        console.error('No token found');
-        setLoading(false);
-        return;
-      }
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      // Buscar inventario por id_producto - necesito confirmar el endpoint exacto
+      // Buscar inventario por id_producto - intentar sin token si API lo permite
       const response = await fetch(`${import.meta.env.VITE_URL_API}/inventario/cantidad/${productId}`, {
         method: 'GET',
-        headers: getAuthHeaders(),
+        headers,
       });
 
       if (!response.ok) {
@@ -120,29 +112,40 @@ export function ProductDetailView() {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching inventory:', error);
+      // If inventory cannot be fetched, continue and allow viewing product; mark loading false
+      setInventory(null as any);
       setLoading(false);
     }
   };
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
-    if (value > 0 && inventory && value <= inventory.cantidad) {
+    if (Number.isNaN(value)) return;
+    if (value > 0 && (!inventory || value <= inventory.cantidad)) {
       setQuantity(value);
     }
   };
 
   const handleAddToCart = () => {
-    if (product && inventory) {
+    if (product) {
+      const availableStock = (inventory && (inventory as any).cantidad) ?? 9999; // si no hay inventario, permitir agregar pero con tope alto
       addToCart(
         {
           id: product.id_producto.toString(),
           name: product.nombre,
           price: product.precio_unitario,
           coverUrl: product.url_imagen,
-          stock: inventory.cantidad, // Usar el stock real del inventario
+          stock: availableStock,
         },
         quantity
       );
+
+      // Mostrar confirmación al usuario (un solo mensaje desde el UI)
+      try {
+        alert(`Se agregaron ${quantity} unidad(es) de "${product.nombre}" al carrito.`);
+      } catch (err) {
+        console.warn('No se pudo mostrar alerta de carrito', err);
+      }
     }
   };
 
@@ -160,7 +163,7 @@ export function ProductDetailView() {
     );
   }
 
-  if (!product || !inventory) {
+  if (!product) {
     return (
       <DashboardContent>
         <Box sx={{ 
@@ -173,16 +176,13 @@ export function ProductDetailView() {
           textAlign: 'center'
         }}>
           <Typography variant="h5" color="error" sx={{ fontWeight: 'medium' }}>
-            {!product ? 'Producto no encontrado' : 'Producto no disponible en este momento'}
+            Producto no encontrado
           </Typography>
-          
-          {!inventory && (
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500 }}>
-              Este producto actualmente no cuenta con inventario disponible.
-              Te invitamos a explorar otros productos en nuestra tienda.
-            </Typography>
-          )}
-          
+
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500 }}>
+            No pudimos cargar la información de este producto. Puedes regresar a la tienda y seguir explorando.
+          </Typography>
+
           <Button
             variant="contained"
             color="primary"
@@ -309,7 +309,7 @@ export function ProductDetailView() {
                 Stock disponible
               </Typography>
               <Typography variant="h4" color="primary.main" sx={{ mb: 4, fontWeight: 'bold' }}>
-                {inventory.cantidad} unidades
+                {inventory ? `${inventory.cantidad} unidades` : 'Stock desconocido'}
               </Typography>
 
               {/* Selector de cantidad */}
@@ -323,7 +323,7 @@ export function ProductDetailView() {
                   onChange={handleQuantityChange}
                   inputProps={{
                     min: 1,
-                    max: inventory.cantidad,
+                    max: inventory ? inventory.cantidad : 9999,
                   }}
                   size="medium"
                   sx={{ 
@@ -343,7 +343,7 @@ export function ProductDetailView() {
                 fullWidth
                 size="large"
                 onClick={handleAddToCart}
-                disabled={inventory.cantidad === 0}
+                disabled={inventory ? inventory.cantidad === 0 : false}
                 sx={{
                   py: 2,
                   fontSize: '1.1rem',
@@ -354,7 +354,7 @@ export function ProductDetailView() {
                 Añadir al carrito
               </Button>
 
-              {inventory.cantidad === 0 && (
+              {inventory && inventory.cantidad === 0 && (
                 <Typography variant="body2" color="error" sx={{ mt: 2, textAlign: 'center' }}>
                   Sin stock disponible
                 </Typography>

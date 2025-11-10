@@ -30,7 +30,25 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 // Crea el componente proveedor
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // Inicializar el carrito desde localStorage si existe (soporta 'cart_items' o 'guest_cart')
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    try {
+      const stored = localStorage.getItem('cart_items') || localStorage.getItem('guest_cart');
+      return stored ? (JSON.parse(stored) as CartItem[]) : [];
+    } catch (err) {
+      console.warn('No se pudo leer el carrito desde localStorage', err);
+      return [];
+    }
+  });
+
+  // Persistir cambios del carrito en localStorage
+  React.useEffect(() => {
+    try {
+      localStorage.setItem('cart_items', JSON.stringify(cartItems));
+    } catch (err) {
+      console.warn('No se pudo guardar el carrito en localStorage', err);
+    }
+  }, [cartItems]);
 
   const addToCart = useCallback((product: CartProduct, quantity: number) => {
     setCartItems(prevItems => {
@@ -45,8 +63,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return prevItems; // Devuelve el estado anterior sin modificarlo.
       }
       // --- FIN DE LA VALIDACIÓN ---
-
-      alert(`Se agregaron ${quantity} unidad(es) de "${product.name}" al carrito.`);
 
       if (existingItem) {
         // Si ya existe, actualiza la cantidad
@@ -79,6 +95,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = useCallback(() => {
     setCartItems([]);
+    try {
+      localStorage.removeItem('cart_items');
+      localStorage.removeItem('guest_cart');
+    } catch (err) {
+      // ignore
+    }
   }, []);
 
   return (
