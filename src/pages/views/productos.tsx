@@ -4,7 +4,7 @@ import '@uiw/react-md-editor/markdown-editor.css';
 import MDEditor from '@uiw/react-md-editor';
 import React, { useState, useEffect } from 'react';
 
-import { api } from 'src/services/api';
+import { api, logServer } from 'src/services/api';
 
 interface Product {
   id_producto: number;
@@ -250,6 +250,7 @@ const ProductsPage = () => {
       }
 
       const data = await response.json();
+      logServer('/productos', 'GET', 'Ver productos');
       setProducts(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (error) {
@@ -280,6 +281,7 @@ const ProductsPage = () => {
 
       const data = await response.json();
       setCategories(Array.isArray(data) ? data : []);
+      logServer('/categorias', 'GET', 'Ver categorías');
     } catch (error) {
       console.error('Error fetching categories:', error);
       setCategories([]);
@@ -307,6 +309,7 @@ const ProductsPage = () => {
           id_producto: newProduct.id_producto,
           estado: true
         });
+        logServer('/inventario', 'POST', `Crear inventario para producto ID ${newProduct.id_producto}`);
         console.log('Entrada de inventario creada para producto:', newProduct.id_producto);
       } catch (inventoryError) {
         console.error('Error al crear entrada de inventario:', inventoryError);
@@ -358,6 +361,7 @@ const ProductsPage = () => {
           id_producto: newProduct.id_producto,
           estado: true
         });
+        logServer('/inventario', 'POST', `Entrada de inventario creada para producto con imagen ${newProduct.id_producto}`);
         console.log('Entrada de inventario creada para producto con imagen:', newProduct.id_producto);
       } catch (inventoryError) {
         console.error('Error al crear entrada de inventario:', inventoryError);
@@ -388,6 +392,7 @@ const ProductsPage = () => {
       setProducts(prev => prev.map(product => 
         product.id_producto === id ? updatedProduct : product
       ));
+      logServer(`/productos/${id}`, 'PUT', 'Actualizar producto');
       return updatedProduct;
     } catch (error) {
       console.error('Error updating product:', error);
@@ -427,6 +432,7 @@ const ProductsPage = () => {
       setProducts(prev => prev.map(product => 
         product.id_producto === id ? updatedProduct : product
       ));
+      logServer(`/productos/${id}`, 'PUT', 'Actualizar producto con imagen');
       return updatedProduct;
     } catch (error) {
       console.error('Error updating product with image:', error);
@@ -450,6 +456,7 @@ const ProductsPage = () => {
       setProducts(prev => prev.map(product => 
         product.id_producto === id ? { ...product, estado: false } : product
       ));
+      logServer(`/productos/${id}`, 'DELETE', 'Eliminar producto');
       return result;
     } catch (error) {
       console.error('Error deleting product:', error);

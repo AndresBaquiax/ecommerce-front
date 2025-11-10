@@ -18,6 +18,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useAuth } from 'src/hooks/use-auth';
 
 import { Iconify } from 'src/components/iconify';
+import { logServer } from 'src/services/api';
 
 // ----------------------------------------------------------------------
 
@@ -51,16 +52,19 @@ export function SignInView() {
         // Guardar el token en localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        logServer('/auth/login', 'POST', `Usuario ${data.usuario.correo} ha iniciado sesión`);
         // Actualizar el estado de autenticación
         checkAuth();
         router.push('/');
       } else {
         // Mostrar mensaje de error cuando las credenciales son incorrectas
         setError('Correo o contraseña incorrecta');
+        logServer('/auth/login', 'POST', `Fallo de inicio de sesión para correo: ${email}`);
       }
     } catch (err) {
       console.error('Error de conexión:', err);
       setError('Error de conexión. Por favor, intenta de nuevo.');
+      logServer('/auth/login', 'POST', `Error de conexión para correo: ${email}`);
     } finally {
       setLoading(false);
     }
