@@ -2,7 +2,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { toast } from 'react-toastify';
 import { useState, useEffect, useCallback } from 'react';
-import { logServer } from 'src/services/api';
 
 const SearchIcon = () => (
   <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +104,7 @@ export function DireccionesView() {
       }
       
       const data = await response.json();
-      logServer('/direcciones', 'GET', 'Fetched direcciones');
+      //logServer('/direcciones', 'GET', 'Fetched direcciones');
       setDirecciones(data);
     } catch (error) {
       console.error('Error fetching direcciones:', error);
@@ -138,7 +137,7 @@ export function DireccionesView() {
       
       await fetchDirecciones();
       closeModal();
-      logServer('/direcciones', method, editingDireccion ? 'Actualizar direccion' : 'Crear direccion');
+      //logServer('/direcciones', method, editingDireccion ? 'Actualizar direccion' : 'Crear direccion');
       toast.success(`Dirección ${editingDireccion ? 'actualizada' : 'creada'} correctamente`);
     } catch (error) {
       console.error('Error saving direccion:', error);
@@ -161,7 +160,7 @@ export function DireccionesView() {
       }
       
       await fetchDirecciones();
-      logServer('/direcciones', 'DELETE', 'Eliminar direccion');
+      //logServer('/direcciones', 'DELETE', 'Eliminar direccion');
       toast.success('Dirección eliminada correctamente');
     } catch (error) {
       console.error('Error deleting direccion:', error);

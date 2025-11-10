@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { logServer} from 'src/services/api';
+
+import { logServer } from 'src/services/api';
 
 // Custom Icons (same as Direcciones)
 const SearchIcon = () => (

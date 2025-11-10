@@ -17,8 +17,9 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useAuth } from 'src/hooks/use-auth';
 
-import { Iconify } from 'src/components/iconify';
 import { logServer } from 'src/services/api';
+
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
