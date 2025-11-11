@@ -92,4 +92,9 @@ export const navData = [
     path: '/registrocompras',
     icon: icon('material-symbols--order-approve'),
   },
+  {
+    title: 'Logs',
+    path: '/logs',
+    icon: icon('material-symbols--order-approve'),
+  },
 ];

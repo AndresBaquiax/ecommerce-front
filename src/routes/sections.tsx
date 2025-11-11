@@ -34,6 +34,7 @@ export const ProvidersPage = lazy(() => import('src/pages/titles/proveedores'));
 export const UsersPage2 = lazy(() => import('src/pages/titles/usuarios'));
 export const CRUDProductos = lazy(() => import('src/pages/views/productos'));
 export const HistorialComprasPage = lazy(() => import('src/pages/titles/historial-compras'));
+export const LogsPage = lazy(() => import('src/pages/views/logs'));
 
 // ----------------------------------------------------------------------
 // Loader Fallback
@@ -206,6 +207,14 @@ export const routesSection: RouteObject[] = [
             <HistorialComprasPage />
           </RoleBasedRoute>
         ) 
+      },
+      {
+        path: 'logs',
+        element: (
+          <RoleBasedRoute requiredPath="/logs">
+            <LogsPage />
+          </RoleBasedRoute>
+        ),
       },
     ],
   },
