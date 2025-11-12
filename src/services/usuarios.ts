@@ -11,6 +11,9 @@ export interface Usuario {
   estado: boolean;
   fecha_creacion: string;
   rol: Rol;
+  // optional cliente state coming from API
+  estado_cliente_num?: number | null;
+  estado_cliente_label?: string | null;
 }
 
 export type CreateUsuarioDto = {

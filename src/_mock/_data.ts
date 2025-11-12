@@ -28,6 +28,8 @@ export const _users = [...Array(24)].map((_, index) => ({
   isVerified: _boolean(index),
   avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
   status: index % 4 ? 'active' : 'banned',
+  // add a mock cliente state for demo: 2 -> Posible, 3 -> Potencial, 4 -> Fidelizado
+  estadoCliente: (index % 6 === 0 ? 'Fidelizado' : index % 3 === 0 ? 'Potencial' : 'Posible'),
   role:
     [
       'Leader',

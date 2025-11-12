@@ -22,6 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useAuth } from 'src/hooks/use-auth';
 
 import { fCurrency } from 'src/utils/format-number';
+import generateQuotePdf, { QuoteItem } from 'src/utils/generateQuotePdf';
 
 import { api } from 'src/services/api';
 import { useCart } from 'src/context/CartContext';
@@ -49,6 +50,20 @@ export function CartView() {
   
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const handleGenerateQuotePdf = async () => {
+    try {
+      const items: QuoteItem[] = cartItems.map((it) => ({ id: it.id, name: it.name, price: it.price, quantity: it.quantity }));
+      // Try generating a downloadable PDF; this will prompt a download instead of opening print dialog
+      const saved = await generateQuotePdf(items, { customerName: undefined, storeName: 'MiTienditaCRM' });
+      if (!saved) {
+        throw new Error('PDF generation returned false');
+      }
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('No fue posible generar el PDF en este momento. Intenta nuevamente o contacta soporte.');
+    }
+  };
 
   const handleContinueShopping = () => {
     navigate('/shopping');
@@ -432,12 +447,38 @@ export function CartView() {
                           Precio unitario: {fCurrency(item.price)}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
                             Cantidad:
                           </Typography>
-                          <Typography variant="subtitle2">
-                            {item.quantity}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <IconButton
+                              size="small"
+                              color="inherit"
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              aria-label={`Restar unidad de ${item.name}`}
+                            >
+                              <Iconify icon={'solar:minus-bold' as any} width={18} />
+                            </IconButton>
+
+                            <Typography variant="subtitle2" sx={{ minWidth: 28, textAlign: 'center' }}>
+                              {item.quantity}
+                            </Typography>
+
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => {
+                                if (typeof item.stock === 'number' && item.quantity + 1 > item.stock) {
+                                  alert(`No puedes agregar más de ${item.stock} unidades de "${item.name}".`);
+                                  return;
+                                }
+                                updateQuantity(item.id, item.quantity + 1);
+                              }}
+                              aria-label={`Sumar unidad de ${item.name}`}
+                            >
+                              <Iconify icon={'solar:plus-bold' as any} width={18} />
+                            </IconButton>
+                          </Box>
                         </Box>
                       </Box>
                       
@@ -449,11 +490,12 @@ export function CartView() {
                       </Box>
                       
                       {/* Botón para eliminar */}
-                      <IconButton 
-                        size="small" 
+                      <IconButton
+                        size="small"
                         color="error"
                         onClick={() => removeFromCart(item.id)}
                         sx={{ ml: 1 }}
+                        title={`Eliminar ${item.name} del carrito`}
                       >
                         <Iconify icon="solar:trash-bin-trash-bold" width={20} />
                       </IconButton>
@@ -510,6 +552,16 @@ export function CartView() {
                 startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Iconify icon="solar:cart-3-bold" />}
               >
                 {loading ? 'Procesando...' : 'Ir a pagar'}
+              </Button>
+              
+              <Button
+                fullWidth
+                variant="outlined"
+                size="large"
+                onClick={handleGenerateQuotePdf}
+                startIcon={<Iconify icon={'mdi:file-pdf-box' as any} />}
+              >
+                Generar cotización (PDF)
               </Button>
               
               <Button
@@ -653,7 +705,7 @@ export function CartView() {
             </Typography>
           </DialogContent>
           <DialogActions sx={{ p: 3 }}>
-            <Button variant="outlined" onClick={handleCloseAuthPrompt}>Cancelar</Button>
+            <Button variant="outlined" onClick={handleContinueShopping}>Seguir comprando</Button>
             <Button variant="contained" onClick={handleGoToLogin}>Iniciar sesión</Button>
             <Button variant="text" onClick={() => navigate('/sign-up?next=/cart')}>Registrarse</Button>
           </DialogActions>

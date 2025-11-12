@@ -31,6 +31,7 @@ const UsuariosView: React.FC = () => {
   const [q, setQ] = useState('');
   const [estadoFilter, setEstadoFilter] = useState<EstadoFilter>('todos');
   const [rolFilter, setRolFilter] = useState<number | 'todos'>('todos');
+  const [seguimientoFilter, setSeguimientoFilter] = useState<'todos' | 'Fidelizado' | 'Posible' | 'Potencial'>('todos');
 
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
 
@@ -43,7 +44,26 @@ const UsuariosView: React.FC = () => {
     (async () => {
       try {
         const [u, r] = await Promise.all([listUsers(), listRoles()]);
-        setRows(Array.isArray(u) ? u : []);
+        // Normalize API results: accept either snake_case or camelCase for estado cliente
+        // If backend returns an object `estadoCliente: { estado: number }` map it to a label
+        const mapEstadoToLabel = (n: number | null | undefined) => {
+          if (n === 4) return 'Fidelizado';
+          if (n === 3) return 'Potencial';
+          if (n === 2) return 'Posible';
+          return null;
+        };
+
+        const normalized = Array.isArray(u)
+          ? u.map((item: any) => ({
+              ...item,
+              estado_cliente_label:
+                item.estado_cliente_label ??
+                (item.estadoCliente && typeof item.estadoCliente === 'object'
+                  ? mapEstadoToLabel(item.estadoCliente.estado)
+                  : mapEstadoToLabel(item.estadoCliente)),
+            }))
+          : [];
+        setRows(normalized);
         setRoles(Array.isArray(r) ? r : []);
       } catch (e) {
         console.error(e);
@@ -81,8 +101,12 @@ const UsuariosView: React.FC = () => {
         if (estadoFilter === 'inactivos') return r.estado === false;
         return true;
       })
-      .filter((r) => (rolFilter === 'todos' ? true : r.rol?.id_rol === rolFilter));
-  }, [rows, q, estadoFilter, rolFilter]);
+      .filter((r) => (rolFilter === 'todos' ? true : r.rol?.id_rol === rolFilter))
+      .filter((r) => {
+        if (seguimientoFilter === 'todos') return true;
+        return (r as any).estado_cliente_label === seguimientoFilter;
+      });
+  }, [rows, q, estadoFilter, rolFilter, seguimientoFilter]);
 
   const openCreate = () => {
     setEditing(null);
@@ -231,6 +255,17 @@ const UsuariosView: React.FC = () => {
                 </option>
               ))}
             </select>
+
+            <select
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={seguimientoFilter}
+              onChange={(e) => setSeguimientoFilter(e.target.value as any)}
+            >
+              <option value="todos">Todos los seguimientos</option>
+              <option value="Fidelizado">Fidelizado</option>
+              <option value="Potencial">Potencial</option>
+              <option value="Posible">Posible</option>
+            </select>
           </div>
         </div>
 
@@ -245,6 +280,7 @@ const UsuariosView: React.FC = () => {
                 <th className="p-4 w-40">Teléfono</th>
                 <th className="p-4 w-32">Rol</th>
                 <th className="p-4 w-28">Estado</th>
+                <th className="p-4 w-40">Seguimiento Cliente</th>
                 <th className="p-4 w-16" />
               </tr>
             </thead>
@@ -267,6 +303,24 @@ const UsuariosView: React.FC = () => {
                     >
                       {u.estado ? 'Activo' : 'Inactivo'}
                     </span>
+                  </td>
+
+                  <td className="p-4">
+                    {u.estado_cliente_label ? (
+                      <span
+                        className={`text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full ${
+                          u.estado_cliente_label === 'Fidelizado'
+                            ? 'bg-blue-100 text-blue-800'
+                            : u.estado_cliente_label === 'Potencial'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {u.estado_cliente_label}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-gray-500">—</span>
+                    )}
                   </td>
                   <td className="p-4 text-right">
                     <div className="relative dropdown-container">

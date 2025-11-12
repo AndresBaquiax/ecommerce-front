@@ -23,6 +23,7 @@ export type UserProps = {
   company: string;
   avatarUrl: string;
   isVerified: boolean;
+  estadoCliente?: string | null;
 };
 
 type UserTableRowProps = {
@@ -76,6 +77,14 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell>
           <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+        </TableCell>
+
+        <TableCell>
+          {row.estadoCliente ? (
+            <Label color={row.estadoCliente === 'Fidelizado' ? 'info' : 'default'}>{row.estadoCliente}</Label>
+          ) : (
+            <span style={{ color: 'rgba(0,0,0,0.6)' }}>—</span>
+          )}
         </TableCell>
 
         <TableCell align="right">

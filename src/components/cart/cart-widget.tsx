@@ -36,8 +36,7 @@ export function CartWidget() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { isAuthenticated } = useAuth();
 
-  // Estado para el prompt de autenticación desde el widget
-  const [openAuthPrompt, setOpenAuthPrompt] = useState(false);
+  // NOTE: do not show auth prompt here; always navigate to /cart and let CartView handle auth
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -49,17 +48,12 @@ export function CartWidget() {
 
   const handleGoToCart = () => {
     handleClose();
-    // Si el usuario no está autenticado, mostrar modal para iniciar sesión/registrarse
-    if (!isAuthenticated) {
-      try {
-        localStorage.setItem('guest_cart', JSON.stringify(cartItems));
-      } catch (err) {
-        console.warn('No se pudo guardar el carrito en localStorage', err);
-      }
-      setOpenAuthPrompt(true);
-      return;
+    // Guardar carrito temporalmente para invitados y navegar siempre a la página de carrito.
+    try {
+      localStorage.setItem('guest_cart', JSON.stringify(cartItems));
+    } catch (err) {
+      console.warn('No se pudo guardar el carrito en localStorage', err);
     }
-
     navigate('/cart');
   };
 
@@ -148,20 +142,7 @@ export function CartWidget() {
         </Box>
       </Popover>
 
-      {/* Dialog para pedir autenticación si el usuario no está logueado */}
-      <Dialog open={openAuthPrompt} onClose={() => setOpenAuthPrompt(false)} maxWidth="xs" fullWidth>
-        <DialogTitle>Necesitas iniciar sesión</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Para completar la compra debes iniciar sesión o crear una cuenta. ¿Deseas iniciar sesión ahora?
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
-          <Button variant="outlined" onClick={() => setOpenAuthPrompt(false)}>Cancelar</Button>
-          <Button variant="contained" onClick={() => navigate('/sign-in?next=/cart')}>Iniciar sesión</Button>
-          <Button variant="text" onClick={() => navigate('/sign-up?next=/cart')}>Registrarse</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Authentication prompt is handled on the /cart page when user clicks 'Ir a pagar' */}
     </>
   );
 }

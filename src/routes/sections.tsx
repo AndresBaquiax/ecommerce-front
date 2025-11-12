@@ -77,6 +77,17 @@ export const routesSection: RouteObject[] = [
       </DashboardLayout>
     ),
   },
+  // Public cart route: allow invited users to view cart and see checkout prompt there
+  {
+    path: 'cart',
+    element: (
+      <DashboardLayout>
+        <Suspense fallback={renderFallback()}>
+          <CartPage />
+        </Suspense>
+      </DashboardLayout>
+    ),
+  },
   // Public products routes: allow viewing list and details without login
   {
     path: 'products',

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,6 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import { _users } from 'src/_mock';
+import { listUsers } from 'src/services/usuarios';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -30,9 +31,51 @@ export function UserView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [apiUsers, setApiUsers] = useState<UserProps[] | null>(null);
+
+  // fetch users from API and map to UI shape
+  useEffect(() => {
+    let mounted = true;
+    listUsers()
+      .then((res: any) => {
+        const data = res?.data ?? res;
+        if (!mounted) return;
+        const mapEstadoToLabel = (n: number | null | undefined) => {
+          if (n === 4) return 'Fidelizado';
+          if (n === 3) return 'Potencial';
+          if (n === 2) return 'Posible';
+          return null;
+        };
+
+        const mapped: UserProps[] = data.map((u: any) => ({
+          id: String(u.id_usuario),
+          name: u.nombre,
+          company: u.correo,
+          isVerified: false,
+          avatarUrl: '/assets/images/avatar/avatar-1.webp',
+          status: u.estado ? 'Activo' : 'Inactivo',
+          role: u.rol?.nombre ?? 'Usuario',
+          // accept either snake_case label, or an object 'estadoCliente' with numeric estado
+          estadoCliente:
+            u.estado_cliente_label ??
+            (u.estadoCliente && typeof u.estadoCliente === 'object'
+              ? mapEstadoToLabel(u.estadoCliente.estado)
+              : mapEstadoToLabel(u.estadoCliente)),
+        }));
+        setApiUsers(mapped);
+      })
+      .catch(() => {
+        setApiUsers([]);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const inputData = apiUsers ?? _users;
 
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -76,13 +119,13 @@ export function UserView() {
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={inputData.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    inputData.map((user) => user.id)
                   )
                 }
                 headLabel={[
@@ -91,6 +134,7 @@ export function UserView() {
                   { id: 'role', label: 'Role' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
                   { id: 'status', label: 'Status' },
+                  { id: 'estadoCliente', label: 'Estado cliente' },
                   { id: '' },
                 ]}
               />
@@ -111,7 +155,7 @@ export function UserView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(table.page, table.rowsPerPage, inputData.length)}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -123,7 +167,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={inputData.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
