@@ -11,6 +11,37 @@ function buildHeaders(init?: HeadersInit, body?: BodyInit | null): HeadersInit {
   };
 }
 
+export async function logServer(path: string, method: string, other: string = '') {
+  const usuario = localStorage.getItem('usuario');
+  if (!usuario) return;
+
+  const fmtMethod = (method || '').toUpperCase().padEnd(6); // e.g. "GET   ", "DELETE"
+  const accion = `${fmtMethod} :${path} [ ${other} ]`;
+
+  try {
+    const dataToSend = {
+      accion: accion,
+      id_usuario: JSON.parse(usuario).id,
+    };
+
+    const response = await fetch(`${API_URL}/logs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    console.info('[ logs ] :Activity logged successfully');
+  } catch (error) {
+    console.error('[logs ] :Failed to log activity:', error);
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -19,17 +50,23 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!res.ok) {
     const text = await res.text().catch(() => '');
+    logServer(path, options.method || 'GET', `Error ${res.status}`);
     throw new Error(text || res.statusText);
   }
 
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204) {
+    logServer(path, options.method || 'GET', 'No Content');
+    return undefined as T;
+  }
 
   const ct = res.headers.get('content-type') || '';
-
   if (ct.includes('application/json')) {
+    logServer(path, options.method || 'GET', 'Response: JSON');
     return (await res.json()) as T;
   }
   const txt = await res.text();
+
+  logServer(path, options.method || 'GET', `Response: ${txt}`);
   return txt as unknown as T;
 }
 

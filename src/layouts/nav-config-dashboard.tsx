@@ -98,4 +98,9 @@ export const navData = [
     // Mostrar solo si el usuario está autenticado
     requiresAuth: true,
   },
+  {
+    title: 'Logs',
+    path: '/logs',
+    icon: icon('material-symbols--order-approve'),
+  },
 ];

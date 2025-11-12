@@ -15,6 +15,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
+import { logServer } from 'src/services/api';
+
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -60,6 +62,7 @@ export function SignUpView() {
       if (response.ok) {
         const data = await response.json();
         setDepartamentos(Array.isArray(data) ? data : []);
+        logServer('/departamentos', 'GET', 'Obtener departamentos');
       } else {
         console.error('Error al obtener departamentos');
       }
@@ -113,6 +116,7 @@ export function SignUpView() {
         }
 
         // Redirigir al login después de un registro exitoso
+        logServer('/usuarios/registro', 'POST', `Nuevo usuario registrado: ${correo}`);
         router.push('/sign-in');
       } else {
         // Mostrar mensaje de error cuando el registro falla

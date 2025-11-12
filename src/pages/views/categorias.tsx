@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import { logServer } from 'src/services/api';
+
 // Custom Icons (same as Direcciones)
 const SearchIcon = () => (
   <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,8 +115,12 @@ const CategoriasPage: React.FC = () => {
       const response = await fetch(`${import.meta.env.VITE_URL_API}/categorias`, {
         headers: getAuthHeaders(),
       });
-      if (!response.ok) throw new Error('Error al obtener categorías');
+      if (!response.ok) {
+        logServer('/categorias', 'GET', `Error ${response.status}`);
+        throw new Error('Error al obtener categorías'); 
+      }
       const data = await response.json();
+      logServer('/categorias', 'GET', `Success: Categorías cargadas`);
       setCategorias(data);
     } catch (error) {
       console.error(error);
@@ -140,6 +146,8 @@ const CategoriasPage: React.FC = () => {
       });
       if (!response.ok) throw new Error('Error al guardar categoría');
       await fetchCategorias();
+
+      logServer('/categorias', method, `Categoría ${editingCategoria ? 'actualizada' : 'creada'}: ${formData.nombre}`);
       closeModal();
       toast.success(`Categoría ${editingCategoria ? 'actualizada' : 'creada'} correctamente`);
     } catch (error) {
@@ -157,6 +165,7 @@ const CategoriasPage: React.FC = () => {
       });
       if (!response.ok) throw new Error('Error al eliminar categoría');
       await fetchCategorias();
+      logServer(`/categorias/${id}`, 'DELETE', `Categoría eliminada [ ID: ${id} ]`);
       toast.success('Categoría eliminada correctamente');
     } catch (error) {
       console.error(error);
