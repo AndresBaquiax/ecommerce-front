@@ -32,13 +32,14 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
   const renderStatus = (
     <Label
       variant="inverted"
-      color={(product.status === 'sale' && 'error') || 'info'}
+      color="error"
       sx={{
         zIndex: 9,
         top: 16,
         right: 16,
         position: 'absolute',
         textTransform: 'uppercase',
+        fontWeight: 'bold',
       }}
     >
       {product.status}
@@ -61,28 +62,32 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
   );
 
   const renderPrice = (
-    <Typography 
-      variant="h5" 
-      sx={{ 
-        fontWeight: 'bold',
-        fontSize: '1.25rem',
-      }}
-    >
-      <Typography
-        component="span"
-        variant="body2"
-        sx={{
-          color: 'text.disabled',
-          textDecoration: 'line-through',
-          fontWeight: 'normal',
-          fontSize: '0.875rem',
-          mr: 1,
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 0 }}>
+      {product.priceSale && (
+        <Typography
+          component="span"
+          variant="caption"
+          sx={{
+            color: 'text.disabled',
+            textDecoration: 'line-through',
+            fontWeight: 'normal',
+            fontSize: '0.7rem',
+          }}
+        >
+          {fCurrency(product.priceSale)}
+        </Typography>
+      )}
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          fontWeight: 'bold',
+          fontSize: '0.95rem',
+          color: product.priceSale ? 'error.main' : 'text.primary',
         }}
       >
-        {product.priceSale && fCurrency(product.priceSale)}
+        {fCurrency(product.price)}
       </Typography>
-      {fCurrency(product.price)}
-    </Typography>
+    </Box>
   );
 
   return (
@@ -102,7 +107,7 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         {renderImg}
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={1.5} sx={{ p: 3 }}>
         <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
           {product.name}
         </Link>
@@ -110,8 +115,10 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
         <Box
           sx={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             justifyContent: 'space-between',
+            gap: 1,
+            height: '40px',
           }}
         >
           {product.available && (
@@ -122,8 +129,8 @@ export function ProductItem({ product }: { product: ProductItemProps }) {
               variant="filled"
               sx={{
                 fontWeight: 600,
-                fontSize: '0.75rem',
-                height: 24,
+                fontSize: '0.7rem',
+                height: 22,
               }}
             />
           )}

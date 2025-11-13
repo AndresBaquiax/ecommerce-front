@@ -9,6 +9,9 @@ export interface CartProduct {
   price: number;
   coverUrl: string;
   stock: number;
+  priceSale?: number;
+  hasOffer?: boolean;
+  discountPercent?: number;
 }
 
 // Define la forma de un ítem del carrito, que incluye la cantidad

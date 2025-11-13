@@ -31,6 +31,9 @@ interface ApiProduct {
   created_at: string;
   updated_at: string;
   nombre_categoria: string;
+  precio_original?: number;
+  tiene_oferta?: boolean;
+  descuento_porcentaje?: number;
 }
 
 // ----------------------------------------------------------------------
@@ -89,10 +92,10 @@ export function ProductsView() {
       id: apiProduct.id_producto.toString(),
       name: apiProduct.nombre,
       price: Number(apiProduct.precio_unitario),
-      status: '', // Sin etiquetas de estado
-      coverUrl: apiProduct.url_imagen || '/assets/images/product/product-1.webp', // Imagen por defecto si no hay
-      available: apiProduct.estado, // Usar el estado del producto para determinar disponibilidad
-      priceSale: null, // Sin precio de venta, solo precio original
+      status: apiProduct.tiene_oferta ? `${apiProduct.descuento_porcentaje}% OFF` : '',
+      coverUrl: apiProduct.url_imagen || '/assets/images/product/product-1.webp',
+      available: apiProduct.estado,
+      priceSale: apiProduct.tiene_oferta ? Number(apiProduct.precio_original) : null,
     });
 
   // Cargar productos al montar el componente

@@ -30,6 +30,9 @@ interface Product {
   created_at: string;
   updated_at: string;
   nombre_categoria: string;
+  precio_original?: number;
+  tiene_oferta?: boolean;
+  descuento_porcentaje?: number;
 }
 
 interface Inventory {
@@ -136,6 +139,9 @@ export function ProductDetailView() {
           price: product.precio_unitario,
           coverUrl: product.url_imagen,
           stock: availableStock,
+          priceSale: product.tiene_oferta ? product.precio_original : undefined,
+          hasOffer: product.tiene_oferta,
+          discountPercent: product.descuento_porcentaje,
         },
         quantity
       );
@@ -248,16 +254,46 @@ export function ProductDetailView() {
             </Typography>
 
             {/* Precio */}
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 'bold',
-                color: 'primary.main',
-                mb: 3,
-              }}
-            >
-              {fCurrency(product.precio_unitario)}
-            </Typography>
+            <Box sx={{ mb: 3 }}>
+              {product.tiene_oferta && product.precio_original && (
+                <>
+                  <Box 
+                    sx={{ 
+                      display: 'inline-block',
+                      bgcolor: 'error.main',
+                      color: 'white',
+                      px: 1.5,
+                      py: 0.5,
+                      borderRadius: 1,
+                      mb: 1,
+                      fontWeight: 'bold',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    {product.descuento_porcentaje}% OFF
+                  </Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      color: 'text.disabled',
+                      textDecoration: 'line-through',
+                      mb: 0.5,
+                    }}
+                  >
+                    {fCurrency(product.precio_original)}
+                  </Typography>
+                </>
+              )}
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 'bold',
+                  color: product.tiene_oferta ? 'error.main' : 'primary.main',
+                }}
+              >
+                {fCurrency(product.precio_unitario)}
+              </Typography>
+            </Box>
 
             {/* Información adicional */}
             <Box sx={{ mt: 3 }}>

@@ -344,8 +344,37 @@ export function CartView() {
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="subtitle1">
                     {item.name}
+                    {item.hasOffer && (
+                      <Box 
+                        component="span"
+                        sx={{ 
+                          ml: 1,
+                          bgcolor: 'error.main',
+                          color: 'white',
+                          px: 1,
+                          py: 0.25,
+                          borderRadius: 0.5,
+                          fontSize: '0.7rem',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {item.discountPercent}% OFF
+                      </Box>
+                    )}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  {item.hasOffer && item.priceSale && (
+                    <Typography 
+                      variant="caption" 
+                      sx={{ 
+                        color: 'text.disabled',
+                        textDecoration: 'line-through',
+                        display: 'block',
+                      }}
+                    >
+                      Precio original: {fCurrency(item.priceSale)}
+                    </Typography>
+                  )}
+                  <Typography variant="body2" color={item.hasOffer ? 'error.main' : 'text.secondary'} sx={{ fontWeight: item.hasOffer ? 600 : 400 }}>
                     Cantidad: {item.quantity} | Precio unitario: {fCurrency(item.price)}
                   </Typography>
                 </Box>
@@ -442,8 +471,38 @@ export function CartView() {
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="subtitle1" sx={{ mb: 0.5 }}>
                           {item.name}
+                          {item.hasOffer && (
+                            <Box 
+                              component="span"
+                              sx={{ 
+                                ml: 1,
+                                bgcolor: 'error.main',
+                                color: 'white',
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: 0.5,
+                                fontSize: '0.7rem',
+                                fontWeight: 'bold',
+                              }}
+                            >
+                              {item.discountPercent}% OFF
+                            </Box>
+                          )}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                        {item.hasOffer && item.priceSale && (
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: 'text.disabled',
+                              textDecoration: 'line-through',
+                              display: 'block',
+                              mb: 0.5
+                            }}
+                          >
+                            Precio original: {fCurrency(item.priceSale)}
+                          </Typography>
+                        )}
+                        <Typography variant="body2" color={item.hasOffer ? 'error.main' : 'text.secondary'} sx={{ mb: 1, fontWeight: item.hasOffer ? 600 : 400 }}>
                           Precio unitario: {fCurrency(item.price)}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
