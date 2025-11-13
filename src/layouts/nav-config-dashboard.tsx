@@ -80,6 +80,11 @@ export const navData = [
     icon: icon('material-symbols--order-approve'), 
   },
   {
+    title: 'Ofertas',
+    path: '/ofertas',
+    icon: icon('sale'),
+  },
+  {
     title: 'Usuarios',
     path: '/usuarios',
     icon: icon('ic-user'), 
