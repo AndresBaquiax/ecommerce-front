@@ -1,3 +1,5 @@
+import type { QuoteItem } from 'src/utils/generateQuotePdf';
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +24,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useAuth } from 'src/hooks/use-auth';
 
 import { fCurrency } from 'src/utils/format-number';
-import generateQuotePdf, { QuoteItem } from 'src/utils/generateQuotePdf';
+import generateQuotePdf from 'src/utils/generateQuotePdf';
 
 import { api } from 'src/services/api';
 import { useCart } from 'src/context/CartContext';

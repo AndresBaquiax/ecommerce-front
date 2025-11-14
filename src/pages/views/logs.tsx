@@ -1,9 +1,9 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 import { fDateTime } from 'src/utils/format-time';
 
 import { listUsers, type Usuario } from 'src/services/usuarios';
-import { listLogs, listLogsByUser, type Log } from 'src/services/logs';
+import { listLogs, type Log, listLogsByUser } from 'src/services/logs';
 
 
 type EstadoFilter = 'todos';

@@ -3,10 +3,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { api } from 'src/services/api';
 import {
   listOfertas,
+  type Oferta,
   createOferta,
   updateOferta,
   deleteOferta,
-  type Oferta,
   type CreateOfertaDto,
 } from 'src/services/ofertas';
 

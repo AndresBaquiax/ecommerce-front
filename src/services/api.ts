@@ -20,7 +20,7 @@ export async function logServer(path: string, method: string, other: string = ''
 
   try {
     const dataToSend = {
-      accion: accion,
+      accion,
       id_usuario: JSON.parse(usuario).id,
     };
 
