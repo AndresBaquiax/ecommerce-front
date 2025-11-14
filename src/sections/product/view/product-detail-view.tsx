@@ -15,6 +15,7 @@ import { fCurrency } from 'src/utils/format-number';
 
 import { useCart } from 'src/context/CartContext';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { logServer } from 'src/services/api';
 
 // ----------------------------------------------------------------------
 
@@ -89,6 +90,7 @@ export function ProductDetailView() {
 
       const data = await response.json();
       setProduct(data);
+      logServer('products/'+productId, 'GET', 'Visita producto exitosa');
     } catch (error) {
       console.error('Error fetching product:', error);
     }
