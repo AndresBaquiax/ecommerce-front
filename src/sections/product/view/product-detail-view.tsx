@@ -13,9 +13,9 @@ import Typography from '@mui/material/Typography';
 
 import { fCurrency } from 'src/utils/format-number';
 
+import { logServer } from 'src/services/api';
 import { useCart } from 'src/context/CartContext';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { logServer } from 'src/services/api';
 
 // ----------------------------------------------------------------------
 
