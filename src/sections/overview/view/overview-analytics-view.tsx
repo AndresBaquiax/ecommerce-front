@@ -1,9 +1,20 @@
 import { useState, useEffect } from 'react';
 
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import { useAuth } from 'src/hooks/use-auth';
+
+import {
+  generateResumenPdf,
+  generateStockBajoPdf,
+  generateTopCategoriasPdf,
+  generateUsuariosPorRolPdf,
+  generateVentasMensualesPdf,
+  generateTimelinePedidosPdf,
+  generateStockPorCategoriaPdf,
+} from 'src/utils/generateReportePdf';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 import {
@@ -38,6 +49,76 @@ export function OverviewAnalyticsView() {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [usuariosRol, setUsuariosRol] = useState<EtiquetaValor[]>([]);
   const [lowStock, setLowStock] = useState<LowStockItem[]>([]);
+
+  const handleGenerarResumenPdf = async () => {
+    try {
+      const data = await getResumen();
+      generateResumenPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarVentasMensualesPdf = async () => {
+    try {
+      const data = await getVentasMensuales();
+      generateVentasMensualesPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarStockPorCategoriaPdf = async () => {
+    try {
+      const data = await getStockPorCategoria();
+      generateStockPorCategoriaPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarTopCategoriasPdf = async () => {
+    try {
+      const data = await getTopCategorias();
+      generateTopCategoriasPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarTimelinePedidosPdf = async () => {
+    try {
+      const data = await getTimelinePedidos();
+      generateTimelinePedidosPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarUsuariosPorRolPdf = async () => {
+    try {
+      const data = await getUsuariosPorRol();
+      generateUsuariosPorRolPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
+
+  const handleGenerarStockBajoPdf = async () => {
+    try {
+      const data = await getStockBajo();
+      generateStockBajoPdf(data);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+      alert('Error al generar el reporte PDF');
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -236,6 +317,80 @@ export function OverviewAnalyticsView() {
               type: t.tipo,
             }))}
           />
+        </Grid>
+
+        {/* Sección de Reportes PDF */}
+        <Grid size={{ xs: 12 }}>
+          <div className="rounded-2xl border border-divider px-6 py-4">
+            <Typography variant="h6" sx={{ mb: 3 }}>
+              Generar Reportes PDF
+            </Typography>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleGenerarResumenPdf}
+                sx={{ minWidth: 200 }}
+              >
+                📊 Reporte Resumen
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleGenerarVentasMensualesPdf}
+                sx={{ minWidth: 200 }}
+              >
+                📈 Ventas Mensuales
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="info"
+                onClick={handleGenerarStockPorCategoriaPdf}
+                sx={{ minWidth: 200 }}
+              >
+                📦 Stock por Categoría
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={handleGenerarTopCategoriasPdf}
+                sx={{ minWidth: 200 }}
+              >
+                🏆 Top Categorías
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="info"
+                onClick={handleGenerarUsuariosPorRolPdf}
+                sx={{ minWidth: 200 }}
+              >
+                👥 Usuarios por Rol
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleGenerarStockBajoPdf}
+                sx={{ minWidth: 200 }}
+              >
+                ⚠️ Alertas de Stock
+              </Button>
+              
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleGenerarTimelinePedidosPdf}
+                sx={{ minWidth: 200 }}
+              >
+                📋 Timeline Pedidos
+              </Button>
+            </div>
+          </div>
         </Grid>
       </Grid>
     </DashboardContent>

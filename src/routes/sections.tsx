@@ -124,9 +124,9 @@ export const routesSection: RouteObject[] = [
     ),
     children: [
       { 
-        index: true, 
+        path: 'dashboard', 
         element: (
-          <RoleBasedRoute requiredPath="/">
+          <RoleBasedRoute requiredPath="/dashboard">
             <DashboardPage />
           </RoleBasedRoute>
         ) 

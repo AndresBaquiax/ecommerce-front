@@ -7,7 +7,7 @@ export type UserRole = 'Analista' | 'Compras' | 'Administrador' | 'Cliente' | 'M
 // Configuración de rutas permitidas por rol
 const ROLE_ROUTES: Record<UserRole, string[]> = {
   Analista: [
-    '/',           
+    '/dashboard',           
     '/user',       
     '/profile'
   ],
@@ -26,7 +26,7 @@ const ROLE_ROUTES: Record<UserRole, string[]> = {
     '/registrocompras'
   ],
   Mercadeo: [
-    '/',
+    '/dashboard',
     '/devoluciones',
     '/logs',
     '/usuarios',
@@ -38,11 +38,11 @@ const ROLE_ROUTES: Record<UserRole, string[]> = {
 
 // Ruta por default
 const DEFAULT_ROUTES: Record<UserRole, string> = {
-  Analista: '/',
+  Analista: '/dashboard',
   Compras: '/compras',
   Cliente: '/shopping',
-  Mercadeo: '/',
-  Administrador: '/'
+  Mercadeo: '/dashboard',
+  Administrador: '/dashboard'
 };
 
 export function useRole() {
