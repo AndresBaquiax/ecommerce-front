@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { useAuth } from './use-auth';
 
-export type UserRole = 'Analista' | 'Compras' | 'Administrador' | 'Cliente';
+export type UserRole = 'Analista' | 'Compras' | 'Administrador' | 'Cliente' | 'Mercadeo';
 
 // Configuración de rutas permitidas por rol
 const ROLE_ROUTES: Record<UserRole, string[]> = {
@@ -25,6 +25,14 @@ const ROLE_ROUTES: Record<UserRole, string[]> = {
     '/direcciones',
     '/registrocompras'
   ],
+  Mercadeo: [
+    '/',
+    '/devoluciones',
+    '/logs',
+    '/usuarios',
+    '/direcciones',
+    '/profile'
+  ],
   Administrador: [] // Sin restricciones
 };
 
@@ -33,6 +41,7 @@ const DEFAULT_ROUTES: Record<UserRole, string> = {
   Analista: '/',
   Compras: '/compras',
   Cliente: '/shopping',
+  Mercadeo: '/',
   Administrador: '/'
 };
 
